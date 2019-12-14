@@ -1,0 +1,16 @@
+language: java
+git:
+  depth: false
+jdk:
+  - openjdk8
+dist: trusty
+cache:
+  directories:
+    - "$HOME/.m2"
+    - '$HOME/.sonar/cache'
+addons:
+  sonarcloud:
+    organization: "oliviercailloux-github"
+script:
+  - mvn org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
+
