@@ -6,5 +6,4 @@ jdk:
 cache:
   directories:
     - "$HOME/.m2"
-    - '$HOME/.sonar/cache'
 
