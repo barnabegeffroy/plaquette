@@ -4,7 +4,6 @@
 :repository: plaquette-mido
 
 image:https://travis-ci.com/Dauphine-MIDO/{repository}.svg?branch=master["Build Status", link="https://travis-ci.com/Dauphine-MIDO/{repository}"]
-image:https://sonarcloud.io/api/project_badges/measure?project={groupId}%3A{artifactId}&metric=alert_status["SonarCloud Status", link="https://sonarcloud.io/dashboard?id={groupId}%3A{artifactId}"]
 
 Un générateur de PDF à partir de données de ROF.
 
