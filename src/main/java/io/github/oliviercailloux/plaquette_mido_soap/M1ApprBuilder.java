@@ -1,6 +1,7 @@
 package io.github.oliviercailloux.plaquette_mido_soap;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,15 +40,30 @@ public class M1ApprBuilder {
 	private static final boolean WRITE_HTML = false;
 
 	static public final String MENTION_ID = "FRUAI0750736TPRMEA5IFO";
+	/**
+	 * Wendy
+	 */
+	static public final String MAIN_MANAGER_PERSON_ID = "FRUAI0750736TPEIN1122";
+
+	/**
+	 * Frédéric
+	 */
+	static public final String MAIN_MANAGER_2_PERSON_ID = "FRUAI0750736TPEIN711";
+
 	static public final String PROGRAM_IDENT = "PRA4AMIA-100";
-	static public final String PROGRAM_NAME = "1ère année de Master - Méthodes Informatiques Appliquées pour la Gestion des Entreprises";
+	static public final String PROGRAM_NAME = "Méthodes Informatiques Appliquées pour la Gestion des Entreprises - 1ère année de Master";
 	static public final String PROGRAM_ID_S1 = "FRUAI0750736TPRCPA4AMIA-100-S1";
+	static public final String PROGRAM_ID_S1_L1 = "FRUAI0750736TPRCPA4AMIA-100-S1L1";
+	static public final String S1_L1_NAME = "UE Obligatoires";
+
+	static public final String PROGRAM_ID_S1_L2 = "FRUAI0750736TPRCPA4AMIAS1L2";
+
+	static public final String S1_L2_NAME = "Bloc UE d'application";
+
 	static public final String PROGRAM_ID_S2 = "FRUAI0750736TPRCPA4AMIA-100-S2";
 
-	static public final String PROGRAM_ID_S1_L1 = "FRUAI0750736TPRCPA4AMIA-100-S1L1";
-	static public final String S1_NAME = "UE Obligatoires";
-
 	static public final String PROGRAM_ID_S2_L1 = "FRUAI0750736TPRCPA4AMIA-100-S2L1";
+
 	static public final String S2_L1_NAME = "UE Obligatoires";
 
 	static public final String PROGRAM_ID_S2_L2 = "FRUAI0750736TPRCPA4AMIA-100-S2L2";
@@ -55,20 +71,10 @@ public class M1ApprBuilder {
 	static public final String S2_L2_NAME = "UE Options";
 
 	public static void main(String[] args) throws Exception {
-		/**
-		 * TODO get the right program through an xpath. Check its semesters stuff. Then
-		 * get the right courses through an xpath.
-		 *
-		 * Get program FRUAI0750736TPRCPA4AMIA-100-S1L1, programName='UE Obligatoires',
-		 * refMention='FRUAI0750736TPRMEA5IFO', get course
-		 * FRUAI0750736TCOENA4AMIA-100-S1L1C1.
-		 */
-
 		QueriesHelper.setDefaultAuthenticator();
 
 		final M1ApprBuilder builder = new M1ApprBuilder();
 		builder.proceed();
-
 	}
 
 	private final Querier querier;
@@ -91,7 +97,20 @@ public class M1ApprBuilder {
 			writer.h2("Semestre 1");
 			final Program program = querier.getProgram(PROGRAM_ID_S1_L1);
 			Verify.verify(program.getProgramStructure().getValue().getRefProgram().isEmpty());
-			Verify.verify(program.getProgramName().getValue().equals(S1_NAME));
+			Verify.verify(program.getProgramName().getValue().equals(S1_L1_NAME));
+
+			final List<String> courseRefs = program.getProgramStructure().getValue().getRefCourse();
+			for (String courseRef : courseRefs) {
+				final Course course = querier.getCourse(courseRef);
+				writeCourse(course);
+			}
+		}
+
+		{
+			writer.h2("Semestre 1, Bloc UE d’application");
+			final Program program = querier.getProgram(PROGRAM_ID_S1_L2);
+			Verify.verify(program.getProgramStructure().getValue().getRefProgram().isEmpty());
+			Verify.verify(program.getProgramName().getValue().equals(S1_L2_NAME), program.getProgramName().getValue());
 
 			final List<String> courseRefs = program.getProgramStructure().getValue().getRefCourse();
 			for (String courseRef : courseRefs) {
@@ -137,7 +156,9 @@ public class M1ApprBuilder {
 			final boolean valid = DocBookUtils.validate(new InputSource(new StringReader(docbook)));
 			Verify.verify(valid);
 			final String fop = DocBookUtils.asFop(new InputSource(new StringReader(docbook)));
-			DocBookUtils.asPdf(new StreamSource(new StringReader(fop)), Files.newOutputStream(Path.of("out.pdf")));
+			try (OutputStream outStream = Files.newOutputStream(Path.of("out.pdf"))) {
+				DocBookUtils.asPdf(new StreamSource(new StringReader(fop)), outStream);
+			}
 		}
 	}
 
@@ -152,7 +173,8 @@ public class M1ApprBuilder {
 		Verify.verify(subPrograms.equals(ImmutableList.of(PROGRAM_ID_S1, PROGRAM_ID_S2)));
 
 		final Program s1 = querier.getProgram(PROGRAM_ID_S1);
-		Verify.verify(s1.getProgramStructure().getValue().getRefProgram().equals(ImmutableList.of(PROGRAM_ID_S1_L1)));
+		final List<String> refProgram = s1.getProgramStructure().getValue().getRefProgram();
+		Verify.verify(refProgram.equals(ImmutableList.of(PROGRAM_ID_S1_L1, PROGRAM_ID_S1_L2)), refProgram.toString());
 		final Program s2 = querier.getProgram(PROGRAM_ID_S2);
 		Verify.verify(s2.getProgramStructure().getValue().getRefProgram()
 				.equals(ImmutableList.of(PROGRAM_ID_S2_L1, PROGRAM_ID_S2_L2)));
@@ -172,8 +194,10 @@ public class M1ApprBuilder {
 		Verify.verify(course.getLearningObjectives() == null);
 		Verify.verify(course.getLevel() == null);
 		Verify.verify(course.getLevelLang() == null);
-		final JAXBElement<String> managingTeacher = course.getManagingTeacher();
-		Verify.verify(managingTeacher == null, valueOrNull(managingTeacher));
+		Verify.verify(
+				course.getManagingTeacher().getValue().equals(MAIN_MANAGER_PERSON_ID)
+						|| course.getManagingTeacher().getValue().equals(MAIN_MANAGER_2_PERSON_ID),
+				valueOrNull(course.getManagingTeacher()));
 		Verify.verify(course.getTeachingLang().equals(ImmutableList.of("fr")));
 		Verify.verify(course.getTeachers().isEmpty());
 		Verify.verify(course.getRecommendedPrerequisites() == null);

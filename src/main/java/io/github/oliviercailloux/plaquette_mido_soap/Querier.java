@@ -15,11 +15,14 @@ import io.github.oliviercailloux.xml_utils.XmlUtils;
 import schemas.ebx.dataservices_1.CourseType.Root.Course;
 import schemas.ebx.dataservices_1.MentionType.Root.Mention;
 import schemas.ebx.dataservices_1.ObjectFactory;
+import schemas.ebx.dataservices_1.PersonType.Root.Person;
 import schemas.ebx.dataservices_1.ProgramType.Root.Program;
 import schemas.ebx.dataservices_1.SelectCourseRequestType;
 import schemas.ebx.dataservices_1.SelectCourseResponseType;
 import schemas.ebx.dataservices_1.SelectMentionRequestType;
 import schemas.ebx.dataservices_1.SelectMentionResponseType;
+import schemas.ebx.dataservices_1.SelectPersonRequestType;
+import schemas.ebx.dataservices_1.SelectPersonResponseType;
 import schemas.ebx.dataservices_1.SelectProgramRequestType;
 import schemas.ebx.dataservices_1.SelectProgramResponseType;
 
@@ -91,5 +94,25 @@ public class Querier {
 		final Course course = Iterables.getOnlyElement(courses);
 		Verify.verify(course.getCourseID().equals(courseId));
 		return course;
+	}
+
+	public List<Person> getPersons(String predicate) throws StandardException {
+		final SelectPersonRequestType request = new SelectPersonRequestType();
+		request.setBranch("pvRefRof");
+		request.setInstance("RefRof");
+		request.setPredicate(predicate);
+		LOGGER.debug("Request: {}.", XmlUtils.toXml(new ObjectFactory().createSelectPerson(request)));
+		final SelectPersonResponseType result = dataservices.selectPersonOperation(request);
+		LOGGER.debug("Result: {}.", XmlUtils.toXml(new ObjectFactory().createSelectPersonResponse(result)));
+		return result.getData().getRoot().getPerson();
+	}
+
+	public Person getPerson(String personId) throws StandardException {
+		final String predicate = "personID = '" + personId + "'";
+		final List<Person> persons = getPersons(predicate);
+		Verify.verify(persons.size() == 1);
+		final Person person = Iterables.getOnlyElement(persons);
+		Verify.verify(person.getPersonID().equals(personId));
+		return person;
 	}
 }

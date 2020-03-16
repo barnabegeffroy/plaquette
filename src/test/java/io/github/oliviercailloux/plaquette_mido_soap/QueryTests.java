@@ -2,17 +2,23 @@ package io.github.oliviercailloux.plaquette_mido_soap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+
+import javax.xml.bind.JAXBElement;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
+import schemas.ebx.dataservices_1.CourseType.Root.Course;
+import schemas.ebx.dataservices_1.CourseType.Root.Course.Contacts;
 import schemas.ebx.dataservices_1.MentionType.Root.Mention;
 import schemas.ebx.dataservices_1.ProgramType.Root.Program;
 
@@ -26,7 +32,7 @@ class QueryTests {
 		QueriesHelper.setDefaultAuthenticator();
 	}
 
-	public QueryTests() {
+	QueryTests() {
 		querier = new Querier();
 	}
 
@@ -36,6 +42,45 @@ class QueryTests {
 		final List<Mention> mentions = querier.getMentions(predicate);
 		assertEquals(1, mentions.size());
 		assertEquals(M1ApprBuilder.MENTION_ID, Iterables.getOnlyElement(mentions).getMentionID());
+	}
+
+	@Test
+	void testVariousPredicates() throws Exception {
+		{
+			final List<Program> programs = querier
+					.getPrograms("refMention/mentionID='" + M1ApprBuilder.MENTION_ID + "'");
+			final ImmutableList<String> programIds = programs.stream().map(Program::getIdent).map(JAXBElement::getValue)
+					.collect(ImmutableList.toImmutableList());
+			assertTrue(programs.size() >= 10, programIds.toString());
+		}
+		{
+			final List<Program> programs = querier.getPrograms("programID='" + M1ApprBuilder.PROGRAM_ID_S1 + "'");
+			assertTrue(programs.size() == 1);
+//			final Program program = Iterables.getOnlyElement(programs);
+//			LOGGER.info("Program: {}.", program.getIdent().getValue());
+//			final List<String> subPrograms = program.getProgramStructure().getValue().getRefProgram();
+//			LOGGER.info("Sub program: {}.", subPrograms);
+		}
+		{
+			final List<Program> programs = querier.getPrograms("starts-with(refMention/mentionID, 'FR')");
+			assertTrue(programs.size() >= 10);
+		}
+		{
+			final List<Program> programs = querier.getPrograms("not(starts-with(refMention/mentionID, 'FR'))");
+			assertTrue(programs.size() == 0);
+		}
+	}
+
+	@Test
+	void testCourseJavaObject() throws Exception {
+		final Course course = querier.getCourse("FRUAI0750736TCOENA3IIMD-100-S5L1C1");
+		assertEquals("Java-Objet", course.getCourseName().getValue());
+		assertEquals(ImmutableList.of(), course.getTeachers());
+		final JAXBElement<Contacts> contactsElement = course.getContacts();
+		/** TODO Wendy has changed this (28 January 2020), this should not be null. */
+		assertNotNull(contactsElement);
+//		final Contacts contacts = contactsElement.getValue();
+//		assertEquals(ImmutableList.of("Olivier Cailloux"), contacts);
 	}
 
 	@Test
