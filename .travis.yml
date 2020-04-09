@@ -6,4 +6,16 @@ jdk:
 cache:
   directories:
     - "$HOME/.m2"
+before_install: 
+  - chmod +x ./script/cibuild
 
+script: ./script/cibuild
+
+branches:
+  only:
+  - build
+
+sudo: false
+
+notifications:
+  email: false

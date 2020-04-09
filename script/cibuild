@@ -1,0 +1,42 @@
+set -e
+DEPLOY_REPO="https://${MY_DOC}@github.com/barnabegeffroy/receive_plaquette.git"
+function main {
+	clean
+	get_current_doc
+	build_doc
+	deploy
+}
+
+function clean { 
+	echo "cleaning pdf file"
+	if [ -d "out.pdf" ]; then rm -Rf out.pdf; fi 
+	if [ -d "out.log" ]; then rm -Rf out.log; fi
+}
+
+function get_current_doc { 
+	echo "getting latest site"
+	git clone --depth 1 $DEPLOY_REPO out.pdf out.log
+}
+
+function build_doc { 
+	echo "building doc"
+	java -cp "target\classes;target\dependency\*" "io.github.oliviercailloux.plaquette_mido_soap.M1ApprBuilder"
+}
+
+function deploy {
+	echo "deploying changes"
+
+	if [ -z "$TRAVIS_PULL_REQUEST" ]; then
+	    echo "except don't publish doc for pull requests"
+	    exit 0
+	fi  
+
+	git config --global user.name "Travis CI"
+    git config --global user.email barnabe.geffroy@psl.eu
+	git add out.pdf out.log
+	git status
+	git commit -m "Lastest site built on successful travis build $TRAVIS_BUILD_NUMBER auto-pushed to github"
+	git push $DEPLOY_REPO master:master
+}
+
+main
