@@ -20,7 +20,7 @@ function get_current_doc {
 
 function build_doc { 
 	echo "building doc"
-	java -cp "target\classes;target\dependency\*" "io.github.oliviercailloux.plaquette_mido_soap.M1ApprBuilder"
+	java -cp "target\classes:target\dependency\*" "io.github.oliviercailloux.plaquette_mido_soap.M1ApprBuilder"
 }
 
 function deploy {
