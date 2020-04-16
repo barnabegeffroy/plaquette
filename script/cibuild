@@ -1,22 +1,10 @@
 set -e
 DEPLOY_REPO="https://${MY_DOC}@github.com/barnabegeffroy/receive_plaquette.git"
 function main {
-	clean
-	get_current_doc
 	build_doc
 	deploy
 }
 
-function clean { 
-	echo "cleaning pdf file"
-	if [ -d "out.pdf" ]; then rm -Rf out.pdf; fi 
-	if [ -d "out.log" ]; then rm -Rf out.log; fi
-}
-
-function get_current_doc { 
-	echo "getting latest site"
-	git clone --depth 1 $DEPLOY_REPO out.pdf out.log
-}
 
 function build_doc { 
 	echo "building doc"
