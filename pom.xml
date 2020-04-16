@@ -143,7 +143,7 @@
 						</goals>
 						<configuration>
 							<wsdlUrls>https://rof.testapi.dauphine.fr/ebx-dataservices/tables/pvRefRof/RefRof?WSDL</wsdlUrls>
-							<xauthFile>${env.WSDL_access}</xauthFile>
+							<xauthFile>WSDL_access.txt</xauthFile>
 							<vmArgs>
 								<vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
 							</vmArgs>
