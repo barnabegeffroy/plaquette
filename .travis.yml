@@ -8,6 +8,7 @@ cache:
     - "$HOME/.m2"
 before_install: 
   - chmod +x ./script/cibuild
+  - echo $WSDL_access > WSDL_access.txt
 
 script: ./script/cibuild
 
