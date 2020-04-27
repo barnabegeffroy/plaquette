@@ -1,5 +1,7 @@
 set -e
-DEPLOY_REPO="https://${MY_DOC}@github.com/barnabegeffroy/receive_plaquette.git"
+REPO="receive_plaquette"
+FILES="out.log out.pdf"
+DEPLOY_REPO="https://${MY_DOC}@github.com/barnabegeffroy/${REPO}.git"
 function main {
 	get_current_doc
 	build_doc
@@ -24,6 +26,8 @@ function deploy {
 	    exit 0
 	fi  
 
+	mv -f ${FILES} ${REPO}
+	cd ${REPO}
 	git config --global user.name "Travis CI"
     git config --global user.email barnabe.geffroy@psl.eu
 	git add --force out.pdf out.log
