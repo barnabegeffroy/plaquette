@@ -8,7 +8,7 @@ function main {
 
 function build_doc { 
 	echo "building doc"
-	java -cp "target\classes:target\dependency\*" "io.github.oliviercailloux.plaquette_mido_soap.M1ApprBuilder"
+	mvn exec:java -Dexec.mainClass=io.github.oliviercailloux.plaquette_mido_soap.M1ApprBuilder
 }
 
 function deploy {
