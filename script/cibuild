@@ -1,10 +1,15 @@
 set -e
 DEPLOY_REPO="https://${MY_DOC}@github.com/barnabegeffroy/receive_plaquette.git"
 function main {
+	get_current_doc
 	build_doc
 	deploy
 }
 
+function get_current_doc { 
+	echo "getting latest site"
+	git clone $DEPLOY_REPO
+}
 
 function build_doc { 
 	echo "building doc"
