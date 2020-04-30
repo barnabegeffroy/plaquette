@@ -1,6 +1,4 @@
 language: java
-git:
-  depth: false
 jdk:
   - openjdk11
 cache:
@@ -8,9 +6,9 @@ cache:
     - "$HOME/.m2"
 before_install: 
   - chmod +x ./script/cibuild
-  - echo $WSDL_access > WSDL_access.txt
+  - echo https://$API_username:$API_password@* > WSDL_access.txt
 
-script: ./script/cibuild
+script: ./script/cibuild.sh
 
 branches:
   only:
