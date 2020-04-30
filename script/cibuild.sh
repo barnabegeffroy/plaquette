@@ -22,7 +22,7 @@ function clean {
 
 function get_current_doc { 
 	echo "getting latest doc"
-	git clone --depth 0 $DEPLOY_REPO
+	git clone --depth 1 $DEPLOY_REPO
 }
 
 function build_doc { 
