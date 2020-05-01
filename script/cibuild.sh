@@ -27,10 +27,11 @@ function get_current_doc {
 
 function build_doc { 
 	echo "trying to build doc"
-	{ 
-		mvn exec:java -Dexec.mainClass=io.github.oliviercailloux.plaquette_mido_soap.M1ApprBuilder 
-	} || { 
-		true }
+	if	mvn exec:java -Dexec.mainClass=io.github.oliviercailloux.plaquette_mido_soap.M1ApprBuilder; then
+		echo "Build succeeded"
+	else
+   		echo "Build failed"
+	fi
 }
 
 function deploy {
