@@ -26,8 +26,11 @@ function get_current_doc {
 }
 
 function build_doc { 
-	echo "building doc"
-	mvn exec:java -Dexec.mainClass=io.github.oliviercailloux.plaquette_mido_soap.M1ApprBuilder
+	echo "trying to build doc"
+	{ 
+		mvn exec:java -Dexec.mainClass=io.github.oliviercailloux.plaquette_mido_soap.M1ApprBuilder 
+	} || { 
+		true }
 }
 
 function deploy {
