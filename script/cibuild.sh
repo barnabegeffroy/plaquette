@@ -2,7 +2,7 @@ set -e
 REPO="receive_plaquette"
 FILE_LOG=out.log
 FILE_PDF=out.pdf
-DEPLOY_REPO="https://${MY_DOC}@github.com/barnabegeffroy/${REPO}.git" ../${REPO}
+DEPLOY_REPO="https://${MY_DOC}@github.com/barnabegeffroy/${REPO}.git"
 function main {
 	clean
 	get_current_doc
@@ -16,7 +16,7 @@ function main {
 
 function get_current_doc { 
 	echo "getting latest doc"
-	git clone --depth 1 $DEPLOY_REPO
+	git clone --depth 1 $DEPLOY_REPO ../${REPO}
 }
 
 function clean { 
