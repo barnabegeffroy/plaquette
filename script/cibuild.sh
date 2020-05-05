@@ -40,7 +40,7 @@ function deploy {
 	if test -f "${FILE_PDF}"; then
 		FILES="${FILES} ${FILE_PDF}"		
 	fi
-	mv -f ${FILES} ${REPO}
+	mv -f ${FILES} ../${REPO}
 	cd ../${REPO}
 	git config --global user.name "Travis CI"
     git config --global user.email barnabe.geffroy@psl.eu
