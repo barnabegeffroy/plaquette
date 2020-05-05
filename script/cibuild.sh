@@ -2,7 +2,7 @@ set -e
 REPO="receive_plaquette"
 FILE_LOG=out.log
 FILE_PDF=out.pdf
-DEPLOY_REPO="https://${MY_DOC}@github.com/barnabegeffroy/${REPO}.git"
+DEPLOY_REPO="https://${MY_DOC}@github.com/barnabegeffroy/${REPO}.git" ../${REPO}
 function main {
 	clean
 	get_current_doc
@@ -14,15 +14,15 @@ function main {
 	fi  
 }
 
-function clean { 
-	echo "cleaning _site folder"
-	if [ -f "${FILE_LOG}" ]; then rm -f ${FILE_LOG}; fi 
-	if [ -f "${FILE_PDF}" ]; then rm -f ${FILE_PDF}; fi 
-}
-
 function get_current_doc { 
 	echo "getting latest doc"
 	git clone --depth 1 $DEPLOY_REPO
+}
+
+function clean { 
+	echo "cleaning docs folder"
+	if [ -f "${FILE_LOG}" ]; then rm -f ${FILE_LOG}; fi 
+	if [ -f "${FILE_PDF}" ]; then rm -f ${FILE_PDF}; fi 
 }
 
 function build_doc { 
@@ -41,7 +41,7 @@ function deploy {
 		FILES="${FILES} ${FILE_PDF}"		
 	fi
 	mv -f ${FILES} ${REPO}
-	cd ${REPO}
+	cd ../${REPO}
 	git config --global user.name "Travis CI"
     git config --global user.email barnabe.geffroy@psl.eu
 	git add ${FILES}
