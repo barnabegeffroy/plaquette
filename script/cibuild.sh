@@ -32,7 +32,7 @@ function build_doc {
 		echo "Build succeeded"
 	else
    		echo "Build failed"
-		${BUILT}=0
+		BUILT=0
 	fi
 }
 
