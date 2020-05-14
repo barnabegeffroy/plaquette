@@ -3,7 +3,7 @@ REPO="receive_plaquette"
 FILE_LOG=out.log
 FILE_PDF=out.pdf
 DEPLOY_REPO="https://${MY_DOC}@github.com/barnabegeffroy/${REPO}.git"
-BUILT=1
+BUILT=0
 function main {
 	clean
 	get_current_doc
@@ -32,7 +32,7 @@ function build_doc {
 		echo "Build succeeded"
 	else
    		echo "Build failed"
-		BUILT=0
+		BUILT=1
 	fi
 }
 
@@ -50,10 +50,7 @@ function deploy {
 	git status
 	git commit -m "Lastest doc built on successful travis build $TRAVIS_BUILD_NUMBER auto-pushed to github"
 	git push $DEPLOY_REPO master
-	if [ !${BUILT} ]; then
-	    echo "Only logs has been pushed. Stopping here"
-	    exit 0
-	fi
+	exit ${BUILT}
 }
 
 main
