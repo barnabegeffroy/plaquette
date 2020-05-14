@@ -3,7 +3,7 @@ REPO="receive_plaquette"
 FILE_LOG=out.log
 FILE_PDF=out.pdf
 DEPLOY_REPO="https://${MY_DOC}@github.com/barnabegeffroy/${REPO}.git"
-BUILT=true
+BUILT=1
 function main {
 	clean
 	get_current_doc
@@ -32,7 +32,7 @@ function build_doc {
 		echo "Build succeeded"
 	else
    		echo "Build failed"
-		${BUILT}=false
+		${BUILT}=0
 	fi
 }
 
