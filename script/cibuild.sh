@@ -3,6 +3,7 @@ REPO="receive_plaquette"
 FILE_LOG=out.log
 FILE_PDF=out.pdf
 DEPLOY_REPO="https://${MY_DOC}@github.com/barnabegeffroy/${REPO}.git"
+BUILT=true
 function main {
 	clean
 	get_current_doc
@@ -14,15 +15,15 @@ function main {
 	fi  
 }
 
+function clean { 
+	echo "cleaning docs"
+	if [ -f "${FILE_LOG}" ]; then rm -f ${FILE_LOG}; fi 
+	if [ -f "${FILE_PDF}" ]; then rm -f ${FILE_PDF}; fi 
+}
+
 function get_current_doc { 
 	echo "getting latest doc"
 	git clone --depth 1 $DEPLOY_REPO ../${REPO}
-}
-
-function clean { 
-	echo "cleaning docs folder"
-	if [ -f "${FILE_LOG}" ]; then rm -f ${FILE_LOG}; fi 
-	if [ -f "${FILE_PDF}" ]; then rm -f ${FILE_PDF}; fi 
 }
 
 function build_doc { 
@@ -31,6 +32,7 @@ function build_doc {
 		echo "Build succeeded"
 	else
    		echo "Build failed"
+		${BUILT}=false
 	fi
 }
 
@@ -48,6 +50,10 @@ function deploy {
 	git status
 	git commit -m "Lastest doc built on successful travis build $TRAVIS_BUILD_NUMBER auto-pushed to github"
 	git push $DEPLOY_REPO master
+	if [ !${BUILT} ]; then
+	    echo "Only logs has been pushed. Stopping here"
+	    exit 0
+	fi
 }
 
 main
