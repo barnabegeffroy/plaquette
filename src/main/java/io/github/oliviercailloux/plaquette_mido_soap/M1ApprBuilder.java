@@ -75,6 +75,7 @@ public class M1ApprBuilder {
 
 		final M1ApprBuilder builder = new M1ApprBuilder();
 		builder.proceed();
+		verify(false);
 	}
 
 	private final Querier querier;
