@@ -75,7 +75,7 @@ public class M1ApprBuilder {
 
 		final M1ApprBuilder builder = new M1ApprBuilder();
 		builder.proceed();
-		//throw new IllegalStateException("crashed");
+		throw new IllegalStateException("crashed");
 	}
 
 	private final Querier querier;
