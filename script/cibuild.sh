@@ -28,7 +28,7 @@ function get_current_doc {
 
 function build_doc { 
 	echo "trying to build doc"
-	if	mvn exec:java -Dexec.mainClass=io.github.oliviercailloux.plaquette_mido_soap.M1ApprBuilder; then
+	if	java -cp "target/classes:$(cat .classpath)" "io.github.oliviercailloux.plaquette_mido_soap.M1ApprBuilder"; then
 		echo "Build succeeded"
 	else
    		echo "Build failed"
