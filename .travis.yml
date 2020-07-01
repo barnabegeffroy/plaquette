@@ -6,7 +6,6 @@ cache:
     - "$HOME/.m2"
 before_install: 
   - chmod +x ./script/cibuild.sh
-  - git update-index --chmod=+x ./script/writeWSDL.sh
   - ./script/writeWSDL.sh
 
 script: ./script/cibuild.sh
