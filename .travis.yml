@@ -6,10 +6,8 @@ cache:
     - "$HOME/.m2"
 before_install: 
   - chmod +x ./script/cibuild.sh
+  - git update-index --chmod=+x ./script/writeWSDL.sh
   - ./script/writeWSDL.sh
-  - API_username=$(urlencode "${API_username}")
-  - API_password=$(urlencode "${API_password}")
-  - echo https://${API_username}:${API_password}@* > WSDL_login.txt
 
 script: ./script/cibuild.sh
 
