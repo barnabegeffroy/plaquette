@@ -6,7 +6,7 @@ cache:
     - "$HOME/.m2"
 before_install: 
   - chmod +x ./script/cibuild.sh
-  - ./script/writeWSDL.sh
+  - echo https://${API_username}:${API_password}@* > WSDL_login.txt
 
 script: ./script/cibuild.sh
 
