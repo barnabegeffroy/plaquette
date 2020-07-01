@@ -6,7 +6,12 @@ import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.xml.bind.JAXBElement;
@@ -51,7 +56,7 @@ public class M1ApprBuilder {
 	static public final String MAIN_MANAGER_2_PERSON_ID = "FRUAI0750736TPEIN711";
 
 	static public final String PROGRAM_IDENT = "PRA4AMIA-100";
-	static public final String PROGRAM_NAME = "Méthodes Informatiques Appliquées pour la Gestion des Entreprises - 1ère année";
+	static public final String PROGRAM_NAME = "Méthodes Informatiques Appliquées pour la Gestion des Entreprises - 1ère année de Master";
 	static public final String PROGRAM_ID_S1 = "FRUAI0750736TPRCPA4AMIA-100-S1";
 	static public final String PROGRAM_ID_S1_L1 = "FRUAI0750736TPRCPA4AMIA-100-S1L1";
 	static public final String S1_L1_NAME = "UE Obligatoires";
@@ -75,7 +80,6 @@ public class M1ApprBuilder {
 
 		final M1ApprBuilder builder = new M1ApprBuilder();
 		builder.proceed();
-		//throw new IllegalStateException("crashed");
 	}
 
 	private final Querier querier;
@@ -93,6 +97,10 @@ public class M1ApprBuilder {
 		writer.h1("Programme du M1 MIAGE en apprentissage");
 		writer.addAttribute("lang", "fr");
 		writer.eol();
+		writer.paragraph("Généré le "
+				+ DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).withLocale(Locale.FRANCE)
+						.withZone(ZoneId.of("Europe/Paris")).format(Instant.now())
+				+ " à partir des données du site internet de Dauphine.");
 
 		{
 			writer.h2("Semestre 1");

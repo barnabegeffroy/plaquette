@@ -6,15 +6,12 @@ cache:
     - "$HOME/.m2"
 before_install: 
   - chmod +x ./script/cibuild.sh
-  - echo https://$API_username:$API_password@* > WSDL_access.txt
+  - ./script/writeWSDL.sh
 
 script: ./script/cibuild.sh
 
-branches:
-  only:
-  - build
-
 sudo: false
 
+#While Travis is not set
 notifications:
   email: false
