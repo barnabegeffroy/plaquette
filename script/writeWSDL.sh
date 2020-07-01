@@ -14,8 +14,3 @@ urlencode() {
     
     LC_COLLATE=$old_lc_collate
 }
-
-API_username=$(urlencode "${API_username}")
-API_password=$(urlencode "${API_password}")
-
-echo https://${API_username}:${API_password}@* > WSDL_login.txt
